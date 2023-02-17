@@ -1,0 +1,44 @@
+<!DOCTYPE html><html>  
+<head> 
+<title>Image to Sketch Converter</title>
+<link rel="stylesheet" href="index.css">
+</head> 
+<body> 
+<div id="image-container"> 
+<img id="source-image" src="hemanth.png" alt="Source Image" />    
+<canvas id="sketch-canvas"></canvas>   
+</div> 
+<script> 
+// Wait for the source image to load   
+window.addEventListener("load", function () { 
+ var canvas = document.getElementById("sketch-canvas");   
+ var context = canvas.getContext("2d");  
+// Set the canvas dimensions to match the source image  
+canvas.width = document.getElementById("source-image").width;      
+canvas.height = document.getElementById("source-image").height;  
+// Draw the source image onto the canvas  
+context.drawImage(   
+       document.getElementById("source-image"),    
+       0,    
+       0,      
+       canvas.width,    
+       canvas.height    
+    );     
+// get the image data from the canvas  
+var imageData = context.getImageData(0, 0, canvas.width, canvas.height);   
+var data = imageData.data; 
+// Loop through each pixel in the image and apply the sketch effect
+var brightnessAdjustment = -100; //here we can adjust the brightness value in range negitive to positive   
+for (var i = 0; i < data.length; i += 4) {       
+   var brightness = (3 * data[i] + 4 * data[i + 1] + data[i + 2]) >>> 3;
+   brightness += brightnessAdjustment; //here logic for brightnessAdjustment 
+   data[i] = brightness;      
+   data[i + 1] = brightness; 
+   data[i + 2] = brightness;      
+ }     
+// Put the modified image data back on the canvas     
+context.putImageData(imageData, 0, 0); 
+}); 
+</script>
+</body>
+</html>
